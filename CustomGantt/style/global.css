@@ -1,0 +1,107 @@
+.custom-vis-layout.customgantt #tooltip {
+ position: absolute;
+ width: auto;
+ height: auto;
+ box-shadow: rgba(0, 0, 0, 0.4) 4px 4px 10px;
+ pointer-events: none;
+ line-height: 1;
+ font-weight: bold;
+ padding: 12px;
+ background: rgba(0, 0, 0, 0.8);
+ color: rgb(255, 255, 255);
+ border-radius: 2px;
+ }
+
+.custom-vis-layout.customgantt #tooltip.hidden {
+ display: none;
+ }
+
+.custom-vis-layout.customgantt #tooltip p {
+ margin: 0px;
+ font-family: sans-serif;
+ font-size: 16px;
+ line-height: 20px;
+ }
+
+.custom-vis-layout.customgantt .tickY {
+ stroke: black;
+ }
+
+.custom-vis-layout.customgantt .task-bar:hover {
+ fill-opacity: 0.7;
+ }
+
+.custom-vis-layout.customgantt .task-label.hidden {
+ display: none;
+ }
+
+.custom-vis-layout.customgantt .task-date-label.hidden {
+ display: none;
+ }
+
+.custom-vis-layout.customgantt .task-date-label {
+ font-weight: bold;
+ }
+
+.custom-vis-layout.customgantt .milestone-label {
+ fill: rgb(3, 69, 105);
+ }
+
+.custom-vis-layout.customgantt .milestone-label.hidden {
+ display: none;
+ }
+
+.custom-vis-layout.customgantt .dateline-line {
+ stroke: red;
+ stroke-width: 2px;
+ }
+
+.custom-vis-layout.customgantt .dateline-label {
+ fill: grey;
+ }
+
+.custom-vis-layout.customgantt .chart {
+ font-family: Arial, sans-serif;
+ font-size: 12px;
+ }
+
+.custom-vis-layout.customgantt .xaxis-group path, .custom-vis-layout.customgantt .xaxis-group line {
+ fill: none;
+ stroke: rgb(0, 0, 0);
+ shape-rendering: crispEdges;
+ }
+
+.custom-vis-layout.customgantt .qtr-group path, .custom-vis-layout.customgantt .qtr-group line {
+ fill: none;
+ stroke: rgb(0, 0, 0);
+ shape-rendering: crispEdges;
+ }
+
+.custom-vis-layout.customgantt .fy-qtr-group path, .custom-vis-layout.customgantt .fy-qtr-group line {
+ fill: none;
+ stroke: rgb(0, 0, 0);
+ shape-rendering: crispEdges;
+ }
+
+.custom-vis-layout.customgantt .fy-group path, .custom-vis-layout.customgantt .fy-group line {
+ fill: none;
+ stroke: rgb(0, 0, 0);
+ shape-rendering: crispEdges;
+ }
+
+.custom-vis-layout.customgantt .xaxis-group.hidden {
+ display: none;
+ }
+
+.custom-vis-layout.customgantt .qtr-group.hidden {
+ display: none;
+ }
+
+.custom-vis-layout.customgantt .fy-qtr-group.hidden {
+ display: none;
+ }
+
+.custom-vis-layout.customgantt .fy-group.hidden {
+ display: none;
+ }
+
