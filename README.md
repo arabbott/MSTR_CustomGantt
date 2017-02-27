@@ -1,6 +1,9 @@
 # MSTR_CustomGantt
 A Custom Gantt chart developed with D3 for use in Microstrategy Visual Insight
 
+Version 1.1.1:
+- Fixed issue with overflow scrolling in IE
+
 Version 1.1 includes:
 - Fixed issue with default property setting not being recognized in custom properties tab.
 - Normalized names for custom properties (i.e. checked box indicates that feature is on, unchecked means off).
