@@ -56,7 +56,7 @@ this.raiseEvent({ //for export as pdf
 });
 
 //debugger;
-document.getElementById(this.domNode.id).style.overflow = "scroll"; //allow for scroll bar in browser should graph height exceed client height
+document.getElementById(this.domNode.id).style.overflow = "auto"; //allow for scroll bar in browser should graph height exceed client height
 
 //console.log(this.getDefaultProperties()); //used for debugging
 //console.log(this.getProperties()); //used for debugging
@@ -466,6 +466,7 @@ d3.gantt = function() {
 			.enter()
 			.append("svg")
 			.attr("class", "chart")
+			.style("overflow", "auto")
 			.append("g")
 			.attr("class", "gantt-chart")
 			//.style("width", (getChartWidth() - margin.left - margin.right)) //original code - omitted for fitting of MSTR domNode
