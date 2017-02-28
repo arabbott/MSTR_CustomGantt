@@ -1,13 +1,8 @@
 # MSTR_CustomGantt
 A Custom Gantt chart developed with D3 for use in Microstrategy Visual Insight
 
-Version 1.1.1:
-- Fixed issue with overflow scrolling in IE
+This chart was created using original source code by Aaron Lampros - https://github.com/alampros/Gantt-Chart 
 
-Version 1.1 includes:
-- Fixed issue with default property setting not being recognized in custom properties tab.
-- Normalized names for custom properties (i.e. checked box indicates that feature is on, unchecked means off).
-- "Month Axis" renamed to "CY Axis".
-- "CY Quarter Axis", "FY Quarter Axis", and "FY Axis" are set by default not to show.
-- CSS styling changes made to tooltip pop-up window.
-- Fixed issue with Drop Zones not working in MSTR 10.3
+Source code was modified to meet my requirements; and to work as a visualization with MicroStrategy Visual Insight.
+
+It requires a minimum of 4 attributes and 1 metric.  The attributes should include a "Parent" attribute, a "Child" attribute that are tied to the "Parent" attribute, along with "Start Date" and "End Date" attributes.  The one metric should be in the form of a percentage (i.e. XX%) and is used to draw the inner progress bar on each task.  An empty value for the metric will result in no progress bar being shown.
