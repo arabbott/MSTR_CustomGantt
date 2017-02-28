@@ -467,6 +467,10 @@ d3.gantt = function() {
 			.append("svg")
 			.attr("class", "chart")
 			.style("overflow", "auto")
+			.on("click", function () { //this "deselects" and "clears" a selection when using viz as a selector
+				me.clearSelections();
+                me.endSelections();
+			})
 			.append("g")
 			.attr("class", "gantt-chart")
 			//.style("width", (getChartWidth() - margin.left - margin.right)) //original code - omitted for fitting of MSTR domNode
@@ -583,6 +587,7 @@ d3.gantt = function() {
 
 	    // draw task bars
 	    taskRenderer.calculateBarWidth(calculateBarWidth).eventHandlers(eventHandlers["task"]).getThisForSel(me).configValue("showLabels", hideLabelBool).configValue("dateLabels", hideDateLabelBool).draw(nodes);
+
     }
 
     var getnodePosition = function(nodeNode){
@@ -604,6 +609,7 @@ d3.gantt = function() {
 			//.style("width", (getChartWidth() - margin.left - margin.right)); //original code
 			.style("width", domNode.clientWidth); //uses MSTR domNode for width
 		console.log("Chart resized to " + (getChartHeight() + margin.top + margin.bottom) + " height" + "\n" + (domNode.clientWidth) + " width.");
+		
     }
 
 	/* GETTER / SETTER METHODS */
@@ -1505,20 +1511,21 @@ d3.taskRenderer = function(){
 		.on("click", function (d) {
 			// use the selector API when clicking on a bar
 			  getThisForSel.applySelection(d.selection);
+			  d3.event.stopPropagation();
 		})		
 		
 		// add progress bar's rect
 		node.append("rect")
-		 .attr("y", (config.barHeight-config.progressBarHeight)/2)
-		 .attr("height", config.progressBarHeight )
-		 .attr("width", function (d) { 
-		 		if (hasOwnProperty(d,"progress")){
-		 			return d.progress * calculateBarWidth(d);
-		 		} else {
-		 			return 0;
-		 		}
-		 	})
-	     .attr("class", function(d) {if(hasOwnProperty(d,"class")) return d.class + "-progress-bar"; else return "task-progress-bar";})
+			.attr("y", (config.barHeight-config.progressBarHeight)/2)
+			.attr("height", config.progressBarHeight )
+			.attr("width", function (d) { 
+					if (hasOwnProperty(d,"progress")){
+						return d.progress * calculateBarWidth(d);
+					} else {
+						return 0;
+					}
+				})
+			 .attr("class", function(d) {if(hasOwnProperty(d,"class")) return d.class + "-progress-bar"; else return "task-progress-bar";})
 			.attr("fill", function(d) {
 			//debugger;
 				for (var i = 0; i < categories.length; i++) {	
@@ -1527,7 +1534,7 @@ d3.taskRenderer = function(){
 					}
 				}
 			})
-	     .call(assignEvent);
+			.call(assignEvent);
 
 		// add task labels
 		node.append("text")
