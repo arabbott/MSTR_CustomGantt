@@ -1,3 +1,11 @@
+Version 1.2.1:
+- Percentages for Progress in tooltip pop-up now rounded to the nearest 0.1%.
+- Milestones can now be used as a selector to filter target visualizations.
+- When switching between "Dark Theme" and "Light Theme" in Visual Insight, coloring of some fonts and lines automatically switch for better contrast.
+- Added title to Y-Axis which is populated by the "Parent" attribute column header from Drop Zones.  This can be toggled on/off through "Gantt Chart Settings" custom properties tab.
+- Changed coloring of Milestone labels to be a brighter shade of their respective circle color.
+- Font size for tooltip popup can now be customized to several different font sizes (default is 16px).  This is manipulated through "Gantt Chart Settings" custom properties tab.
+
 Version 1.2:
 - When using the visualization as a selector/filter, clicking any white space in the chart area deselects/clears all selections on the target visualization.
 

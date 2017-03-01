@@ -27,6 +27,17 @@
 * and to meet other specified requirements.
 */
 
+//console.log(document.getElementById("rootView").className); //used for debugging
+var theme = document.getElementById("rootView").className; //get class name of root -- used to determine light or dark theme
+var themeBool = (theme === 'mstrmojo-RootView  mojo-theme-light'); //true if light theme - false if dark theme
+//console.log(themeBool); //used for debugging
+var colorByTheme = null;
+if(!themeBool){
+	colorByTheme = '#cccccc'/* 'rgb(204, 204, 204)' */;
+}
+else{
+	colorByTheme = 'black';
+}
 
 this.setDefaultPropertyValues({ //set default props for custom props
 		showChangeDate: 'false',
@@ -37,7 +48,9 @@ this.setDefaultPropertyValues({ //set default props for custom props
 		showCYQtrAxis: 'false',
 		showFYAxis: 'false',
 		showFYQtrAxis: 'false',
-		dateLine: ""
+		dateLine: "",
+		tooltipFontSize: "16px",
+		showYAxisTitle: 'true'
 });
 
 //checks if there are existing children on the domNode, if so deletes them
@@ -63,6 +76,7 @@ document.getElementById(this.domNode.id).style.overflow = "auto"; //allow for sc
 //console.log("showLabels: " + this.getProperty("showLabels")); //used for debugging
 //console.log("dateLine: " + this.getProperty("dateLine")); //used for debugging
 //console.log(this.getProperty("showDateLine")); //used for debugging
+//console.log("Tool Tip Font Size: " + this.getProperty("tooltipFontSize")); //used for debugging
 
 var showDateLineBool = (this.getProperty('showDateLine') === 'true');
 var hideLabelBool = (this.getProperty('showLabels') === 'false');
@@ -71,7 +85,9 @@ var hideCYAxisBool = (this.getProperty('showCYAxis') === 'false');
 var hideCYQtrAxisBool = (this.getProperty('showCYQtrAxis') === 'false');
 var hideFYAxisBool = (this.getProperty('showFYAxis') === 'false');
 var hideFYQtrAxisBool = (this.getProperty('showFYQtrAxis') === 'false');
-
+var tooltipSizeFromProps = this.getProperty("tooltipFontSize");
+var hideYAxisTitleBool = (this.getProperty('showYAxisTitle') === 'false');
+//debugger;
 var dateLineFromProp = this.getProperty('dateLine');
 
 var validateDate = function(testdate) { //test for date format
@@ -131,12 +147,17 @@ d3.select(domNode).append("div")
 .attr("id", "tooltip")
 .attr("class", "hidden")
 .append("p").append("strong").append("p")
-.append("span").attr("id", "value"); 
+.append("span").attr("id", "value");
+
+d3.select("#tooltip p").style("font-size", tooltipSizeFromProps);
 
 var $DI = mstrmojo.models.template.DataInterface, //this sets the MSTR Data Interface object to a variable
-	dataModel = (new $DI(this.model.data)).getRawData($DI.ENUM_RAW_DATA_FORMAT.ROWS_ADV, {hasSelection: true}); //this variable will hold all the data from the MSTR dataset
-	
+	dataModel = (new $DI(this.model.data)).getRawData($DI.ENUM_RAW_DATA_FORMAT.ROWS_ADV, {hasSelection: true, hasTitleName: true}); //this variable will hold all the data from the MSTR dataset
+//debugger;	
 //console.log(dataModel);  //used for debugging
+
+var yAxisTitle = dataModel[0].headers[0].tname;
+//console.log(yAxisTitle); //debugging
 
 //set variables for data model that feeds data from the dataModel to the gantt chart object
 var categories, tasks, 
@@ -381,10 +402,10 @@ d3.gantt = function() {
 
     var configureAxisDomain = function() {
 		//debugger;
-		timeAxisRenderer.domain([ timeDomainStart, timeDomainEnd ]).tickFormat(tickFormat).configValue("axisLength",(domNode.clientWidth - margin.left - margin.right)).configValue("hideAxis", hideCYAxisBool);
-		quarterAxisRenderer.domain([ timeDomainStart, timeDomainEnd ]).configValue("axisLength",(domNode.clientWidth - margin.left - margin.right)).configValue("hideAxis", hideCYQtrAxisBool);
-		FYAxisRenderer.domain([ timeDomainStart, timeDomainEnd ]).configValue("axisLength",(domNode.clientWidth - margin.left - margin.right)).configValue("hideAxis", hideFYAxisBool);
-		FYQtrAxisRenderer.domain([ timeDomainStart, timeDomainEnd ]).configValue("axisLength",(domNode.clientWidth - margin.left - margin.right)).configValue("hideAxis", hideFYQtrAxisBool);
+		timeAxisRenderer.domain([ timeDomainStart, timeDomainEnd ]).tickFormat(tickFormat).configValue("axisLength",(domNode.clientWidth - margin.left - margin.right)).configValue("hideAxis", hideCYAxisBool).configValue("strokeColor", colorByTheme);
+		quarterAxisRenderer.domain([ timeDomainStart, timeDomainEnd ]).configValue("axisLength",(domNode.clientWidth - margin.left - margin.right)).configValue("hideAxis", hideCYQtrAxisBool).configValue("strokeColor", colorByTheme);
+		FYAxisRenderer.domain([ timeDomainStart, timeDomainEnd ]).configValue("axisLength",(domNode.clientWidth - margin.left - margin.right)).configValue("hideAxis", hideFYAxisBool).configValue("strokeColor", colorByTheme);
+		FYQtrAxisRenderer.domain([ timeDomainStart, timeDomainEnd ]).configValue("axisLength",(domNode.clientWidth - margin.left - margin.right)).configValue("hideAxis", hideFYQtrAxisBool).configValue("strokeColor", colorByTheme);
 		timeAxisRenderer.init();
 		quarterAxisRenderer.init();
 		FYAxisRenderer.init();
@@ -394,7 +415,7 @@ d3.gantt = function() {
 			// if no categories provided, calculate them from task categories
 			categories = calculateCategories(tasks)
 		}
-		categoryAxisRenderer.overlappingResolver(overlappingResolver).categories(categories);
+		categoryAxisRenderer.overlappingResolver(overlappingResolver).categories(categories).configValue("strokeColor", colorByTheme).configValue("yAxisTitle", yAxisTitle).configValue("hideTitle", hideYAxisTitleBool);
 		if(height != null){
 			categoryAxisRenderer.configValue("axisLength", height);
 		}
@@ -546,7 +567,7 @@ d3.gantt = function() {
 		 	.attr("transform", mileStoneTransform)
 
 	    // draw milestone marks and labels
-	    msRenderer.eventHandlers(eventHandlers["milestone"]).configValue("showLabels", hideLabelBool).draw(nodes);
+	    msRenderer.eventHandlers(eventHandlers["milestone"]).getThisForSel(me).configValue("showLabels", hideLabelBool).draw(nodes);
 	}
 
     /* checks if a task is visible */
@@ -785,7 +806,8 @@ d3.timeAxisRenderer = function(){
 	var timeDomain = []
 	var config = {
 		"axisLength": 600,
-		"hideAxis": false
+		"hideAxis": false,
+		"strokeColor": 'black'
 	};
 	var x = null;
 	var xAxis = null;
@@ -814,6 +836,10 @@ d3.timeAxisRenderer = function(){
 	/* Draws axis hanging on the svg node passed as parameter */
 	timeAxisRenderer.draw  = function(node){
 		node.transition().call(xAxis);
+		node.selectAll(".tick minor").attr("style", "stroke:" + config.strokeColor);
+		node.selectAll("text").attr("style", "fill:" + config.strokeColor + "; text-anchor: middle;");
+		node.selectAll("line").attr("style", "stroke:" + config.strokeColor);
+		node.selectAll(".domain").attr("style", "stroke:" + config.strokeColor);
 	}
 
 	/* PRIVATE METHODS */
@@ -858,7 +884,8 @@ d3.quarterAxisRenderer = function(){
 	var timeDomain = []
 	var config = {
 		"axisLength": 600,
-		"hideAxis": true
+		"hideAxis": true,
+		"strokeColor": 'black'
 	};
 	var x2 = null;
 	var xAxisQtr = null;
@@ -900,6 +927,10 @@ d3.quarterAxisRenderer = function(){
 	/* Draws Qtr axis hanging on the svg node passed as parameter */
 	quarterAxisRenderer.drawQtr  = function(node){
 		node.transition().call(xAxisQtr);
+		node.selectAll(".tick minor").attr("style", "stroke:" + config.strokeColor);
+		node.selectAll("text").attr("style", "fill:" + config.strokeColor + "; text-anchor: middle;");
+		node.selectAll("line").attr("style", "stroke:" + config.strokeColor);
+		node.selectAll(".domain").attr("style", "stroke:" + config.strokeColor);
 	}
 
 	/* PRIVATE METHODS */
@@ -938,7 +969,8 @@ d3.FYQtrAxisRenderer = function(){
 	var timeDomain = []
 	var config = {
 		"axisLength": 600,
-		"hideAxis": true
+		"hideAxis": true,
+		"strokeColor": 'black'
 	};
 	var x = null;
 	var xAxisFYQtr = null;
@@ -979,6 +1011,10 @@ d3.FYQtrAxisRenderer = function(){
 	/* Draws Qtr axis hanging on the svg node passed as parameter */
 	FYQtrAxisRenderer.drawFYQtr  = function(node){
 		node.transition().call(xAxisFYQtr)/* .call(getHideAxisConfig) *//* .classed("hidden", config.hideAxis) *//* .call(xAxisQtrLabel).call(alignLabels) */;
+		node.selectAll(".tick minor").attr("style", "stroke:" + config.strokeColor);
+		node.selectAll("text").attr("style", "fill:" + config.strokeColor + "; text-anchor: middle;");
+		node.selectAll("line").attr("style", "stroke:" + config.strokeColor);
+		node.selectAll(".domain").attr("style", "stroke:" + config.strokeColor);
 	}
 
 	/* PRIVATE METHODS */
@@ -1017,7 +1053,8 @@ d3.FYAxisRenderer = function(){
 	var timeDomain = []
 	var config = {
 		"axisLength": 600,
-		"hideAxis": true
+		"hideAxis": true,
+		"strokeColor": 'black'
 	};
 	var x = null;
 	var xAxisFY = null;
@@ -1033,6 +1070,10 @@ d3.FYAxisRenderer = function(){
 	/* Draws Qtr axis hanging on the svg node passed as parameter */
 	FYAxisRenderer.drawFY  = function(node){
 		node.transition().call(xAxisFY)/* .classed("hidden", config.hideAxis) *//* .call(xAxisQtrLabel).call(alignLabels) */;
+		node.selectAll(".tick minor").attr("style", "stroke:" + config.strokeColor);
+		node.selectAll("text").attr("style", "fill:" + config.strokeColor + "; text-anchor: middle;");
+		node.selectAll("line").attr("style", "stroke:" + config.strokeColor);
+		node.selectAll(".domain").attr("style", "stroke:" + config.strokeColor);
 	}
 
 	/* PRIVATE METHODS */
@@ -1080,7 +1121,10 @@ d3.categoryAxisRenderer = function(){
 		"barPadding" : 10,
 		"barMargin" : 10,
 		"minTaskBandHeight": 30,
-		"mileStoneHeight" : 15
+		"mileStoneHeight" : 15,
+		"strokeColor" : 'black',
+		"yAxisTitle": "",
+		"hideTitle": false
 	};
 
 	/* PUBLIC METHODS */
@@ -1180,7 +1224,8 @@ d3.categoryAxisRenderer = function(){
     		.attr("x2","0")
     		.attr("y2",scaleValue(calculatedLength))
     		.attr("class", "axisY")
-    		.attr("style","stroke:black");
+    		/* .attr("style","stroke:black") */
+			.attr("style", "stroke:" + config.strokeColor);
 
 		// draw category labels
 		node.selectAll("g").remove();
@@ -1189,6 +1234,7 @@ d3.categoryAxisRenderer = function(){
 			.attr("transform", catnodeTranslation)
 			.append("text")
 			.attr("x", "-5")
+			.style("fill", config.strokeColor)
 			.style("dominant-baseline", "middle")
 			.style("text-anchor", "end")
 			//.attr("class", "tickY-label")
@@ -1213,7 +1259,18 @@ d3.categoryAxisRenderer = function(){
     		.attr("y1",function(d){ return d;})
     		.attr("x2","-100")
     		.attr("y2",function(d){ return d;})
-    		;
+			.attr("style", "stroke:" + config.strokeColor);
+		
+		node.append("text")
+			.attr("id", "yAxisTitle")
+    		.attr("x","-50")
+    		.attr("y","-5")
+    		//.attr("x2","-100")
+    		//.attr("y2","-20")
+			.attr("style", "fill:" + config.strokeColor)
+			.style("text-anchor", "middle")
+			.text(config.yAxisTitle)
+			.classed("hidden", config.hideTitle);
 
 		return categoryAxisRenderer;
 	};
@@ -1493,13 +1550,14 @@ d3.taskRenderer = function(){
 			var translate = d3.transform(d3.select(this.parentNode).attr("transform")).translate;
 			var xPosition = translate[0];
 			var yPosition = translate[1];
+			var precisionPercent = d3.format(".1f")(d.progress*100)
 
 			//Update the tooltip position and value
 			d3.select("#tooltip")
 			  .style("left", xPosition + "px")
 			  .style("top", yPosition + "px")
 			  .select("#value")
-			  .html(d.label+"<br>"+"Start Date: "+d.startDate.toLocaleDateString("en-US")+"<br>" + "End Date: "+d.endDate.toLocaleDateString("en-US")+"<br>" + "Progress: "+d.progress*100+"%");
+			  .html(d.label+"<br>"+"Start Date: "+d.startDate.toLocaleDateString("en-US")+"<br>" + "End Date: "+d.endDate.toLocaleDateString("en-US")+"<br>" + "Progress: "+ precisionPercent +"%");
 
 			//Show the tooltip
 			d3.select("#tooltip").classed("hidden", false);
@@ -1636,6 +1694,8 @@ d3.msRenderer = function(){
 		"mileStoneRadius":4,
 		"showLabels": false
 	};
+	
+	var getThisForSel = null;
 
     var assignEvent = function (selection){
     	for(h in eventHandlers){
@@ -1661,6 +1721,11 @@ d3.msRenderer = function(){
 			})
     		.attr("r",config.mileStoneRadius)
     		//.call(assignEvent)
+			.on("click", function (d) {
+			// use the selector API when clicking on a bar
+			  getThisForSel.applySelection(d.selection);
+			  d3.event.stopPropagation();
+			})	
 			.on("mouseover", function(d) {
 				//Get this bar's x/y values, then augment for the tooltip
 				var translate = d3.transform(d3.select(this.parentNode).attr("transform")).translate;
@@ -1687,6 +1752,13 @@ d3.msRenderer = function(){
 			.attr("x",  config.mileStoneRadius*2)
 			.attr("y",  config.mileStoneRadius)
 			.attr("class", function(d) {if(hasOwnProperty(d,"class")) return d.class+ "-label"; else return "milestone-label";})
+			.attr("fill", function(d) {
+				for (var i = 0; i < categories.length; i++) {	
+					if (d.category == categories[i]) {
+						return d3.rgb(colors(i)).brighter();
+					}
+				}
+			})
 			.text(function(d){ return d.id;})
 			.classed("hidden", config.showLabels);
 	}
@@ -1699,6 +1771,13 @@ d3.msRenderer = function(){
 		if (!arguments.length)
 		    return eventHandlers;
 		eventHandlers = value;
+		return msRenderer;
+	}
+	
+	msRenderer.getThisForSel = function(value) {
+		if (!arguments.length)
+		    return getThisForSel;
+		getThisForSel = value
 		return msRenderer;
 	}
 
