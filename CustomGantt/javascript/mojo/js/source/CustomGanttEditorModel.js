@@ -80,7 +80,99 @@ value: [{
 			style: $WT.CHECKBOXANDLABEL,
 			propertyName: 'showFYAxis', 
             labelText: "FY Axis"
-			}]
+			},
+			{
+			style: $WT.CHECKBOXANDLABEL,
+			propertyName: 'showYAxisTitle', 
+            labelText: "Parent Attribute Column Header"
+			},
+			{
+			style: $WT.TWOCOLUMN,
+			items: [
+				{
+					style: $WT.LABEL,
+					name: "text",
+					width: "30%",
+					labelText: "Tooltip Font Size:"
+				},
+				{
+					style: $WT.PULLDOWN,
+					propertyName: "tooltipFontSize",
+					width: "70%",
+					items: [
+					{
+						name: "8",
+						value: "8px"
+					},
+					{
+						name: "9",
+						value: "9px"
+					},
+					{
+						name: "10",
+						value: "10px"
+					},
+					{
+						name: "11",
+						value: "11px"
+					},
+					{
+						name: "12",
+						value: "12px"
+					},
+					{
+						name: "14",
+						value: "14px"
+					},
+					{
+						name: "16",
+						value: "16px"
+					},
+					{
+						name: "18",
+						value: "18px"
+					},
+					{
+						name: "20",
+						value: "20px"
+					},
+					{
+						name: "22",
+						value: "22px"
+					},
+					{
+						name: "24",
+						value: "24px"
+					},
+					{
+						name: "36",
+						value: "36px"
+					}
+				  ]
+				}
+			  ]
+			}
+			/*
+			*This code display MSTR standard font editor
+			*Would elements can be disabled, they will be greyed out
+			*MSTR document does not list all childNames for disabling elements
+			{
+			style: $WT.CHARACTERGROUP,
+			propertyName: 'cg',
+			items: [{
+				childName: 'fontSize',
+				disabled: false
+				},{
+				childName: 'fontStyle',
+				disabled: true
+				},{
+				childName: 'fontColor',
+				disabled: true
+				},{
+				childName: 'font', //not correct, docs do not state what name to use to disable font type
+				disabled: true
+				}]
+			} */]
 		}]
 },
 
